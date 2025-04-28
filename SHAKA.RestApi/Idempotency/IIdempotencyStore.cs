@@ -17,7 +17,7 @@ namespace SHAKA.RestApi.Idempotency
         /// <param name="requestMethod">The HTTP method of the request.</param>
         /// <param name="expirationTime">How long the idempotency key should be valid.</param>
         /// <param name="cancellationToken">A token to cancel the operation.</param>
-        /// <returns>True if the key was created; false if it already exists.</returns>
+        /// <returns>True if the key was created; false if it already exists.</returns> 
         Task<bool> TryCreateRequestRecordAsync(
             string key, 
             string requestPath, 
