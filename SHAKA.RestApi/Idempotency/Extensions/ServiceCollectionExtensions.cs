@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace SHAKA.RestApi.Idempotency.Extensions
 {
