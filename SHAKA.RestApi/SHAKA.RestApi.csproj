@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Shaka RestAPI</Title>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Shak Mirtskhulava</Authors>
     <Company>LAM</Company>
     <Copyright>Shaka Mirtskhulava 2025, All rights reserved. Unauthorized use, duplication, or distribution of this package without permission is prohibited.</Copyright>
