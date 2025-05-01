@@ -17,19 +17,6 @@ The current version provides a complete abstraction layer for implementing idemp
 
 ### Core Interfaces
 
-#### `IIdempotencyKeyProvider`
-
-Defines how to extract idempotency keys from HTTP requests.
-
-```csharp
-public interface IIdempotencyKeyProvider
-{
-    Task<string?> GetIdempotencyKeyAsync(CancellationToken cancellationToken = default);
-}
-```
-
-Implement this interface to customize how idempotency keys are extracted from requests (e.g., from headers, query parameters, or request body).
-
 #### `IIdempotencyStore`
 
 Handles the storage and retrieval of idempotent operation results.
@@ -47,19 +34,6 @@ public interface IIdempotencyStore
 ```
 
 This interface should be implemented in infrastructure-specific libraries (e.g., SHAKA.API.EF, SHAKA.API.Dapper) to provide persistence for idempotency records.
-
-#### `IIdempotencyDetector`
-
-Determines if an operation is marked as idempotent.
-
-```csharp
-public interface IIdempotencyDetector
-{
-    bool IsIdempotent(string requestPath, string httpMethod, MethodInfo? methodInfo, out TimeSpan expirationTime);
-}
-```
-
-This interface allows the system to detect idempotent operations based on attributes or global configuration.
 
 ### Model Classes
 
@@ -110,10 +84,12 @@ public class IdempotencyOptions
     public bool AllPostsAreIdempotent { get; set; } = false;
     public bool AllPutsAreIdempotent { get; set; } = true;
     public bool EnforceStrictContentValidation { get; set; } = true;
+    public TimeSpan CleanupInterval { get; set; }
 }
 ```
 
-These options control the behavior of the idempotency middleware, including which HTTP methods are treated as idempotent by default.
+These options control the behavior of the idempotency middleware, including which HTTP methods are treated as idempotent by default as well
+as configures the cleanup interval for the idempotency cleanup service.
 
 ## Usage Examples
 
@@ -123,10 +99,12 @@ In your `Program.cs` or `Startup.cs`:
 
 ```csharp
 // Add core idempotency services
-builder.Services.AddIdempotency(options => {
+builder.Services.AddIdempotency(options =>
+{
     options.IdempotencyHeaderName = "X-Idempotency-Key";
+    options.DefaultExpirationTime = TimeSpan.FromSeconds(5);
     options.AllPostsAreIdempotent = true;
-    options.DefaultExpirationTime = TimeSpan.FromHours(48);
+    options.AllPutsAreIdempotent = true;
 });
 
 // Register a specific implementation of IIdempotencyStore
@@ -183,9 +161,7 @@ This library provides only the abstraction layer for idempotency. To use it in a
 
 The library is designed to be extensible:
 
-- Implement custom `IIdempotencyKeyProvider` to change how keys are extracted from requests
 - Create different `IIdempotencyStore` implementations for various storage technologies
-- Implement custom `IIdempotencyDetector` for more complex idempotency detection logic
 
 ## Infrastructure-Specific Implementations
 
